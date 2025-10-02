@@ -1,0 +1,12 @@
+# dependencies
+node_modules/
+# builds
+dist/
+coverage/
+# env
+.env
+server/.env
+client/.env
+# editors
+.idea/
+.DS_Store
