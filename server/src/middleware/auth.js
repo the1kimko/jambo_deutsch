@@ -1,24 +1,11 @@
-import jwt from 'jsonwebtoken';
+// middleware/auth.js
+import { ClerkExpressRequireAuth } from '@clerk/clerk-sdk-node';
 
-export const protect = async (req, res, next) => {
-  try {
-    let token;
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith('Bearer')
-    ) {
-      token = req.headers.authorization.split(' ')[1];
-    }
-
-    if (!token) {
-      return res.status(401).json({error: 'Not authorized, no token'});
-    }
-
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.userId = decoded.id;
-    next();
-  } catch (error) {
-    return res.status(401).json({error: 'Not authorized, token failed'});
-  }
-};
-
+export const protect = ClerkExpressRequireAuth({
+  clerkSecretKey: process.env.CLERK_SECRET_KEY,
+  onError: (error, req, res, next) => {
+    console.error('Clerk auth error:', error);
+    res.status(401).json({ error: 'Not authorized' });
+    next(error); // Pass error to next middleware
+  },
+});
