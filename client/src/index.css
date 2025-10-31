@@ -5,9 +5,11 @@
 /* Import animation plugin */
 @plugin "tailwindcss-animate";
 
-/* Define your custom theme using @theme directive */
+/* ========================================================================== */
+/* THEME CONFIGURATION (replaces tailwind.config.ts)                         */
+/* ========================================================================== */
 @theme {
-  /* Color tokens - Tailwind v4 uses CSS variables directly */
+  /* Core Colors */
   --color-background: 35 25% 97%;
   --color-foreground: 20 15% 15%;
   --color-card: 0 0% 100%;
@@ -50,39 +52,23 @@
   --color-sidebar-border: 220 13% 91%;
   --color-sidebar-ring: 217.2 91.2% 59.8%;
 
-  /* Border radius */
+  /* Border Radius */
   --radius: 1rem;
   --radius-lg: 1rem;
   --radius-md: calc(1rem - 2px);
   --radius-sm: calc(1rem - 4px);
+
+  /* Container */
+  --container-padding: 2rem;
+  --container-max-width-2xl: 1400px;
+
+  /* Define the 2xl breakpoint */
+  --breakpoint-2xl: 1400px;
 }
 
-/* Custom properties that can't be in @theme */
-:root {
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, hsl(38 92% 50%), hsl(38 92% 65%));
-  --gradient-secondary: linear-gradient(135deg, hsl(180 45% 45%), hsl(180 45% 60%));
-  --gradient-hero: linear-gradient(135deg, hsl(38 92% 50%) 0%, hsl(12 88% 62%) 100%);
-  --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(35 25% 98%));
-
-  /* Shadows */
-  --shadow-elegant: 0 10px 30px -10px hsl(38 92% 50% / 0.2);
-  --shadow-glow: 0 0 40px hsl(38 92% 65% / 0.3);
-  --shadow-card: 0 4px 12px -2px hsl(20 15% 15% / 0.08);
-
-  /* Animation */
-  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  --sidebar: hsl(0 0% 98%);
-  --sidebar-foreground: hsl(240 5.3% 26.1%);
-  --sidebar-primary: hsl(240 5.9% 10%);
-  --sidebar-primary-foreground: hsl(0 0% 98%);
-  --sidebar-accent: hsl(240 4.8% 95.9%);
-  --sidebar-accent-foreground: hsl(240 5.9% 10%);
-  --sidebar-border: hsl(220 13% 91%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
-}
-
-/* Dark mode */
+/* ========================================================================== */
+/* DARK MODE (prefers-color-scheme + .dark class)                            */
+/* ========================================================================== */
 @media (prefers-color-scheme: dark) {
   @theme {
     --color-background: 20 20% 12%;
@@ -116,19 +102,8 @@
     --color-sidebar-border: 240 3.7% 15.9%;
     --color-sidebar-ring: 217.2 91.2% 59.8%;
   }
-
-  :root {
-    --gradient-primary: linear-gradient(135deg, hsl(38 92% 55%), hsl(38 92% 70%));
-    --gradient-secondary: linear-gradient(135deg, hsl(180 45% 50%), hsl(180 45% 65%));
-    --gradient-hero: linear-gradient(135deg, hsl(38 92% 55%) 0%, hsl(12 88% 65%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(20 20% 15%), hsl(20 20% 18%));
-    --shadow-elegant: 0 10px 30px -10px hsl(38 92% 55% / 0.3);
-    --shadow-glow: 0 0 40px hsl(38 92% 70% / 0.4);
-    --shadow-card: 0 4px 12px -2px hsl(0 0% 0% / 0.3);
-  }
 }
 
-/* Manual dark mode class support */
 .dark {
   @theme {
     --color-background: 20 20% 12%;
@@ -154,7 +129,35 @@
     --color-success: 142 76% 45%;
     --color-success-foreground: 0 0% 100%;
   }
+}
 
+/* ========================================================================== */
+/* CUSTOM CSS VARIABLES (gradients, shadows)                                 */
+/* ========================================================================== */
+:root {
+  --gradient-primary: linear-gradient(135deg, hsl(38 92% 50%), hsl(38 92% 65%));
+  --gradient-secondary: linear-gradient(135deg, hsl(180 45% 45%), hsl(180 45% 60%));
+  --gradient-hero: linear-gradient(135deg, hsl(38 92% 50%) 0%, hsl(12 88% 62%) 100%);
+  --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(35 25% 98%));
+  --shadow-elegant: 0 10px 30px -10px hsl(38 92% 50% / 0.2);
+  --shadow-glow: 0 0 40px hsl(38 92% 65% / 0.3);
+  --shadow-card: 0 4px 12px -2px hsl(20 15% 15% / 0.08);
+  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --gradient-primary: linear-gradient(135deg, hsl(38 92% 55%), hsl(38 92% 70%));
+    --gradient-secondary: linear-gradient(135deg, hsl(180 45% 50%), hsl(180 45% 65%));
+    --gradient-hero: linear-gradient(135deg, hsl(38 92% 55%) 0%, hsl(12 88% 65%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(20 20% 15%), hsl(20 20% 18%));
+    --shadow-elegant: 0 10px 30px -10px hsl(38 92% 55% / 0.3);
+    --shadow-glow: 0 0 40px hsl(38 92% 70% / 0.4);
+    --shadow-card: 0 4px 12px -2px hsl(0 0% 0% / 0.3);
+  }
+}
+
+.dark {
   --gradient-primary: linear-gradient(135deg, hsl(38 92% 55%), hsl(38 92% 70%));
   --gradient-secondary: linear-gradient(135deg, hsl(180 45% 50%), hsl(180 45% 65%));
   --gradient-hero: linear-gradient(135deg, hsl(38 92% 55%) 0%, hsl(12 88% 65%) 100%);
@@ -162,150 +165,81 @@
   --shadow-elegant: 0 10px 30px -10px hsl(38 92% 55% / 0.3);
   --shadow-glow: 0 0 40px hsl(38 92% 70% / 0.4);
   --shadow-card: 0 4px 12px -2px hsl(0 0% 0% / 0.3);
-  --sidebar: hsl(240 5.9% 10%);
-  --sidebar-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-primary: hsl(224.3 76.3% 48%);
-  --sidebar-primary-foreground: hsl(0 0% 100%);
-  --sidebar-accent: hsl(240 3.7% 15.9%);
-  --sidebar-accent-foreground: hsl(240 4.8% 95.9%);
-  --sidebar-border: hsl(240 3.7% 15.9%);
-  --sidebar-ring: hsl(217.2 91.2% 59.8%);
 }
 
-/* Base styles */
-* {
-  border-color: hsl(var(--color-border));
-}
+/* ========================================================================== */
+/* UTILITY CLASSES                                                           */
+/* ========================================================================== */
+.bg-gradient-primary { background-image: var(--gradient-primary); }
+.bg-gradient-secondary { background-image: var(--gradient-secondary); }
+.bg-gradient-hero { background-image: var(--gradient-hero); }
+.bg-gradient-card { background-image: var(--gradient-card); }
 
-body {
-  background-color: hsl(var(--color-background));
-  color: hsl(var(--color-foreground));
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+.shadow-elegant { box-shadow: var(--shadow-elegant); }
+.shadow-glow { box-shadow: var(--shadow-glow); }
+.shadow-card { box-shadow: var(--shadow-card); }
 
-/* Custom utility classes for gradients and shadows */
-.bg-gradient-primary {
-  background-image: var(--gradient-primary);
-}
+.transition-smooth { transition: var(--transition-smooth); }
 
-.bg-gradient-secondary {
-  background-image: var(--gradient-secondary);
-}
-
-.bg-gradient-hero {
-  background-image: var(--gradient-hero);
-}
-
-.bg-gradient-card {
-  background-image: var(--gradient-card);
-}
-
-.shadow-elegant {
-  box-shadow: var(--shadow-elegant);
-}
-
-.shadow-glow {
-  box-shadow: var(--shadow-glow);
-}
-
-.shadow-card {
-  box-shadow: var(--shadow-card);
-}
-
-/* Animation utilities */
-.transition-smooth {
-  transition: var(--transition-smooth);
-}
-
-/* Keyframes for animations */
+/* ========================================================================== */
+/* ANIMATIONS & KEYFRAMES                                                    */
+/* ========================================================================== */
 @keyframes accordion-down {
-  from {
-    height: 0;
-  }
-  to {
-    height: var(--radix-accordion-content-height);
-  }
+  from { height: 0; }
+  to { height: var(--radix-accordion-content-height); }
 }
-
 @keyframes accordion-up {
-  from {
-    height: var(--radix-accordion-content-height);
-  }
-  to {
-    height: 0;
-  }
+  from { height: var(--radix-accordion-content-height); }
+  to { height: 0; }
 }
-
 @keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
 @keyframes slide-up {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-  }
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
 }
-
 @keyframes pulse-glow {
-  0%, 100% {
-    box-shadow: var(--shadow-glow);
-  }
-  50% {
-    box-shadow: 0 0 60px hsl(var(--color-primary-glow) / 0.5);
-  }
+  0%, 100% { box-shadow: var(--shadow-glow); }
+  50% { box-shadow: 0 0 60px hsl(var(--color-primary-glow) / 0.5); }
 }
 
-/* Animation classes */
-.animate-accordion-down {
-  animation: accordion-down 0.2s ease-out;
-}
+.animate-accordion-down { animation: accordion-down 0.2s ease-out; }
+.animate-accordion-up { animation: accordion-up 0.2s ease-out; }
+.animate-fade-in { animation: fade-in 0.5s ease-out; }
+.animate-slide-up { animation: slide-up 0.4s ease-out; }
+.animate-pulse-glow { animation: pulse-glow 2s ease-in-out infinite; }
 
-.animate-accordion-up {
-  animation: accordion-up 0.2s ease-out;
-}
-
-.animate-fade-in {
-  animation: fade-in 0.5s ease-out;
-}
-
-.animate-slide-up {
-  animation: slide-up 0.4s ease-out;
-}
-
-.animate-pulse-glow {
-  animation: pulse-glow 2s ease-in-out infinite;
-}
-
-@theme inline {
-  --color-sidebar: var(--sidebar);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-ring: var(--sidebar-ring);
-}
-
+/* ========================================================================== */
+/* BASE STYLES                                                               */
+/* ========================================================================== */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+/* ========================================================================== */
+/* CONTAINER (replaces theme.container)                                      */
+/* ========================================================================== */
+.container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+  max-width: var(--container-max-width-2xl);
+}
+
+@media (min-width: var(--breakpoint-2xl)) {
+  .container {
+    max-width: var(--container-max-width-2xl);
   }
 }

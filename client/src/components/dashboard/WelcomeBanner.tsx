@@ -1,9 +1,16 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import type { DashboardUser } from '@/types/user';
+// import type { DashboardUser } from '@/types/user';
 
 interface WelcomeBannerProps {
-  user: DashboardUser;
+  user: {
+    name: string;
+    firstName?: string;
+    email: string;
+    // add updatedAt only if "last seen" is displayed
+    updatedAt?: string;
+    goal?: 'General' | 'Visa Prep' | 'Exam Prep' | 'Other';
+  };
 }
 
 const WelcomeBanner: React.FC<WelcomeBannerProps> = ({ user }) => {

@@ -2,12 +2,12 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './i18n.ts';
 import { BrowserRouter } from 'react-router-dom';
-// import { StrictMode } from 'react'
-// import { createRoot } from 'react-dom/client'
 import './index.css'
 import App from './App.tsx'
 import { ClerkProvider } from '@clerk/clerk-react';
 import { AuthProvider } from './context/AuthProvider.tsx';
+import { SonnerToaster } from './components/ui/sonner-toaster.tsx';
+
 
 const pk = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
@@ -20,6 +20,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
     <AuthProvider>
       <BrowserRouter>
         <App />
+        <SonnerToaster />
       </BrowserRouter>
     </AuthProvider>
   </ClerkProvider>
