@@ -1,8 +1,13 @@
-import { Toaster } from "sonner";
+import { useTheme } from 'next-themes';
+import { Toaster } from 'sonner';
+import type { ToasterProps } from 'sonner';
 
 export function SonnerToaster() {
+  const { theme = 'system' } = useTheme();
+
   return (
     <Toaster
+      theme={theme as ToasterProps['theme']}
       position="bottom-right"
       closeButton
       richColors

@@ -74,9 +74,9 @@ const Home: React.FC = () => {
 
       try {
         const [userRes, activityRes, leaderboardRes] = await Promise.all([
-          api.get('/api/auth/me'),
-          api.get('/api/activities?limit=5'),
-          api.get('/api/leaderboard?limit=3'),
+          api.get('/auth/me'),
+          api.get('/activities?limit=5'),
+          api.get('/leaderboard?limit=3'),
         ]);
 
         const userData = userRes.data;

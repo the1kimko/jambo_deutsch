@@ -13,6 +13,7 @@ export const ROUTES = {
     FLASHCARDS: '/flashcards',
     PRACTICE: '/practice',
     PARTNERS: '/partners',
+    PRONUNCIATION: '/pronunciation',
     PROFILE: '/profile',
     SETTINGS: '/settings'
 } as const;

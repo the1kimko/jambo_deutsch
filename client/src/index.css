@@ -9,61 +9,44 @@
 /* THEME CONFIGURATION (replaces tailwind.config.ts)                         */
 /* ========================================================================== */
 @theme {
-  /* Core Colors */
-  --color-background: 35 25% 97%;
-  --color-foreground: 20 15% 15%;
+  /* Neumorphic Ivory Base */
+  --color-background: 45 40% 94%;
+  --color-foreground: 24 24% 16%;
+  --color-muted: 45 25% 90%;
+  --color-muted-foreground: 24 10% 40%;
+  --color-border: 42 24% 82%;
+  --color-input: 42 24% 82%;
+
+  /* Cards */
   --color-card: 0 0% 100%;
-  --color-card-foreground: 20 15% 15%;
+  --color-card-foreground: 24 24% 16%;
   --color-popover: 0 0% 100%;
-  --color-popover-foreground: 20 15% 15%;
+  --color-popover-foreground: 24 24% 16%;
 
-  /* Primary: Warm Amber Gold */
-  --color-primary: 38 92% 50%;
+  /* Accent Palette */
+  --color-primary: 32 96% 55%; /* Warm amber */
   --color-primary-foreground: 0 0% 100%;
-  --color-primary-glow: 38 92% 65%;
-
-  /* Secondary: Deep Teal */
-  --color-secondary: 180 45% 45%;
+  --color-primary-soft: 32 96% 90%;
+  --color-secondary: 184 45% 44%; /* Teal */
   --color-secondary-foreground: 0 0% 100%;
-
-  /* Accent: Vibrant Coral */
-  --color-accent: 12 88% 62%;
+  --color-accent: 14 86% 65%; /* Coral */
   --color-accent-foreground: 0 0% 100%;
-
-  --color-muted: 35 20% 92%;
-  --color-muted-foreground: 20 10% 45%;
-  --color-destructive: 0 84% 60%;
-  --color-destructive-foreground: 0 0% 100%;
-  --color-border: 35 20% 88%;
-  --color-input: 35 20% 88%;
-  --color-ring: 38 92% 50%;
-
-  /* Success */
-  --color-success: 142 76% 36%;
+  --color-success: 142 60% 35%;
   --color-success-foreground: 0 0% 100%;
-
-  /* Sidebar */
-  --color-sidebar-background: 0 0% 98%;
-  --color-sidebar-foreground: 240 5.3% 26.1%;
-  --color-sidebar-primary: 240 5.9% 10%;
-  --color-sidebar-primary-foreground: 0 0% 98%;
-  --color-sidebar-accent: 240 4.8% 95.9%;
-  --color-sidebar-accent-foreground: 240 5.9% 10%;
-  --color-sidebar-border: 220 13% 91%;
-  --color-sidebar-ring: 217.2 91.2% 59.8%;
+  --color-destructive: 0 79% 55%;
+  --color-destructive-foreground: 0 0% 100%;
+  --color-ring: 32 96% 55%;
 
   /* Border Radius */
   --radius: 1rem;
-  --radius-lg: 1rem;
-  --radius-md: calc(1rem - 2px);
-  --radius-sm: calc(1rem - 4px);
+  --radius-lg: 1.25rem;
+  --radius-md: 1rem;
+  --radius-sm: 0.75rem;
 
   /* Container */
-  --container-padding: 2rem;
-  --container-max-width-2xl: 1400px;
-
-  /* Define the 2xl breakpoint */
-  --breakpoint-2xl: 1400px;
+  --container-padding: 1.5rem;
+  --container-max-width-2xl: 1200px;
+  --breakpoint-2xl: 1280px;
 }
 
 /* ========================================================================== */
@@ -71,63 +54,55 @@
 /* ========================================================================== */
 @media (prefers-color-scheme: dark) {
   @theme {
-    --color-background: 20 20% 12%;
-    --color-foreground: 35 20% 95%;
-    --color-card: 20 20% 15%;
-    --color-card-foreground: 35 20% 95%;
-    --color-popover: 20 20% 15%;
-    --color-popover-foreground: 35 20% 95%;
-    --color-primary: 38 92% 55%;
-    --color-primary-foreground: 20 20% 12%;
-    --color-primary-glow: 38 92% 70%;
-    --color-secondary: 180 45% 50%;
+    --color-background: 24 16% 11%;
+    --color-foreground: 45 35% 92%;
+    --color-muted: 24 16% 18%;
+    --color-muted-foreground: 45 20% 70%;
+    --color-border: 24 16% 22%;
+    --color-input: 24 16% 22%;
+    --color-card: 26 18% 13%;
+    --color-card-foreground: 45 35% 92%;
+    --color-popover: 26 18% 13%;
+    --color-popover-foreground: 45 35% 92%;
+    --color-primary: 32 96% 62%;
+    --color-primary-foreground: 24 16% 11%;
+    --color-primary-soft: 32 96% 25%;
+    --color-secondary: 184 55% 55%;
     --color-secondary-foreground: 0 0% 100%;
-    --color-accent: 12 88% 65%;
+    --color-accent: 14 86% 68%;
     --color-accent-foreground: 0 0% 100%;
-    --color-muted: 20 15% 20%;
-    --color-muted-foreground: 35 15% 65%;
-    --color-destructive: 0 84% 60%;
-    --color-destructive-foreground: 0 0% 100%;
-    --color-border: 20 15% 25%;
-    --color-input: 20 15% 25%;
-    --color-ring: 38 92% 55%;
-    --color-success: 142 76% 45%;
+    --color-success: 142 70% 45%;
     --color-success-foreground: 0 0% 100%;
-    --color-sidebar-background: 240 5.9% 10%;
-    --color-sidebar-foreground: 240 4.8% 95.9%;
-    --color-sidebar-primary: 224.3 76.3% 48%;
-    --color-sidebar-primary-foreground: 0 0% 100%;
-    --color-sidebar-accent: 240 3.7% 15.9%;
-    --color-sidebar-accent-foreground: 240 4.8% 95.9%;
-    --color-sidebar-border: 240 3.7% 15.9%;
-    --color-sidebar-ring: 217.2 91.2% 59.8%;
+    --color-destructive: 0 70% 50%;
+    --color-destructive-foreground: 0 0% 100%;
+    --color-ring: 32 96% 62%;
   }
 }
 
 .dark {
   @theme {
-    --color-background: 20 20% 12%;
-    --color-foreground: 35 20% 95%;
-    --color-card: 20 20% 15%;
-    --color-card-foreground: 35 20% 95%;
-    --color-popover: 20 20% 15%;
-    --color-popover-foreground: 35 20% 95%;
-    --color-primary: 38 92% 55%;
-    --color-primary-foreground: 20 20% 12%;
-    --color-primary-glow: 38 92% 70%;
-    --color-secondary: 180 45% 50%;
+    --color-background: 24 16% 11%;
+    --color-foreground: 45 35% 92%;
+    --color-muted: 24 16% 18%;
+    --color-muted-foreground: 45 20% 70%;
+    --color-border: 24 16% 22%;
+    --color-input: 24 16% 22%;
+    --color-card: 26 18% 13%;
+    --color-card-foreground: 45 35% 92%;
+    --color-popover: 26 18% 13%;
+    --color-popover-foreground: 45 35% 92%;
+    --color-primary: 32 96% 62%;
+    --color-primary-foreground: 24 16% 11%;
+    --color-primary-soft: 32 96% 25%;
+    --color-secondary: 184 55% 55%;
     --color-secondary-foreground: 0 0% 100%;
-    --color-accent: 12 88% 65%;
+    --color-accent: 14 86% 68%;
     --color-accent-foreground: 0 0% 100%;
-    --color-muted: 20 15% 20%;
-    --color-muted-foreground: 35 15% 65%;
-    --color-destructive: 0 84% 60%;
-    --color-destructive-foreground: 0 0% 100%;
-    --color-border: 20 15% 25%;
-    --color-input: 20 15% 25%;
-    --color-ring: 38 92% 55%;
-    --color-success: 142 76% 45%;
+    --color-success: 142 70% 45%;
     --color-success-foreground: 0 0% 100%;
+    --color-destructive: 0 70% 50%;
+    --color-destructive-foreground: 0 0% 100%;
+    --color-ring: 32 96% 62%;
   }
 }
 
@@ -135,36 +110,36 @@
 /* CUSTOM CSS VARIABLES (gradients, shadows)                                 */
 /* ========================================================================== */
 :root {
-  --gradient-primary: linear-gradient(135deg, hsl(38 92% 50%), hsl(38 92% 65%));
-  --gradient-secondary: linear-gradient(135deg, hsl(180 45% 45%), hsl(180 45% 60%));
-  --gradient-hero: linear-gradient(135deg, hsl(38 92% 50%) 0%, hsl(12 88% 62%) 100%);
-  --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(35 25% 98%));
-  --shadow-elegant: 0 10px 30px -10px hsl(38 92% 50% / 0.2);
-  --shadow-glow: 0 0 40px hsl(38 92% 65% / 0.3);
-  --shadow-card: 0 4px 12px -2px hsl(20 15% 15% / 0.08);
-  --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --gradient-primary: linear-gradient(135deg, hsl(32 96% 55%), hsl(32 96% 70%));
+  --gradient-secondary: linear-gradient(135deg, hsl(184 45% 44%), hsl(184 45% 60%));
+  --gradient-hero: linear-gradient(135deg, hsl(32 96% 55%) 0%, hsl(14 86% 65%) 100%);
+  --gradient-card: linear-gradient(180deg, hsl(0 0% 100%), hsl(45 35% 95%));
+  --shadow-elegant: 0 12px 30px -15px hsl(32 96% 40% / 0.3);
+  --shadow-glow: 0 20px 40px -10px hsl(32 96% 60% / 0.35);
+  --shadow-card: 0 8px 20px -15px hsl(24 15% 15% / 0.25);
+  --transition-smooth: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --gradient-primary: linear-gradient(135deg, hsl(38 92% 55%), hsl(38 92% 70%));
-    --gradient-secondary: linear-gradient(135deg, hsl(180 45% 50%), hsl(180 45% 65%));
-    --gradient-hero: linear-gradient(135deg, hsl(38 92% 55%) 0%, hsl(12 88% 65%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(20 20% 15%), hsl(20 20% 18%));
-    --shadow-elegant: 0 10px 30px -10px hsl(38 92% 55% / 0.3);
-    --shadow-glow: 0 0 40px hsl(38 92% 70% / 0.4);
-    --shadow-card: 0 4px 12px -2px hsl(0 0% 0% / 0.3);
+    --gradient-primary: linear-gradient(135deg, hsl(32 96% 62%), hsl(32 96% 74%));
+    --gradient-secondary: linear-gradient(135deg, hsl(184 55% 50%), hsl(184 55% 65%));
+    --gradient-hero: linear-gradient(135deg, hsl(32 96% 62%) 0%, hsl(14 86% 68%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(24 18% 14%), hsl(24 18% 9%));
+    --shadow-elegant: 0 12px 30px -15px hsl(32 96% 70% / 0.2);
+    --shadow-glow: 0 20px 40px -10px hsl(32 96% 60% / 0.35);
+    --shadow-card: 0 12px 25px -20px hsl(0 0% 0% / 0.8);
   }
 }
 
 .dark {
-  --gradient-primary: linear-gradient(135deg, hsl(38 92% 55%), hsl(38 92% 70%));
-  --gradient-secondary: linear-gradient(135deg, hsl(180 45% 50%), hsl(180 45% 65%));
-  --gradient-hero: linear-gradient(135deg, hsl(38 92% 55%) 0%, hsl(12 88% 65%) 100%);
-  --gradient-card: linear-gradient(180deg, hsl(20 20% 15%), hsl(20 20% 18%));
-  --shadow-elegant: 0 10px 30px -10px hsl(38 92% 55% / 0.3);
-  --shadow-glow: 0 0 40px hsl(38 92% 70% / 0.4);
-  --shadow-card: 0 4px 12px -2px hsl(0 0% 0% / 0.3);
+  --gradient-primary: linear-gradient(135deg, hsl(32 96% 62%), hsl(32 96% 74%));
+  --gradient-secondary: linear-gradient(135deg, hsl(184 55% 50%), hsl(184 55% 65%));
+  --gradient-hero: linear-gradient(135deg, hsl(32 96% 62%) 0%, hsl(14 86% 68%) 100%);
+  --gradient-card: linear-gradient(180deg, hsl(24 18% 14%), hsl(24 18% 9%));
+  --shadow-elegant: 0 12px 30px -15px hsl(32 96% 70% / 0.2);
+  --shadow-glow: 0 20px 40px -10px hsl(32 96% 60% / 0.35);
+  --shadow-card: 0 12px 25px -20px hsl(0 0% 0% / 0.8);
 }
 
 /* ========================================================================== */

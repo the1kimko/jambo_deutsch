@@ -1,10 +1,10 @@
 // context/AuthProvider.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth as useClerkAuth, useUser } from '@clerk/clerk-react';
 import { AuthContext } from './AuthContext';
 import type { AuthUser } from '@/types/auth';
 import { storage } from '@/utils/storage';
-import api from '@/utils/api';
+import api, { setApiTokenProvider } from '@/utils/api';
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { user: clerkUser } = useUser();
@@ -13,18 +13,45 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const fetchSessionToken = useCallback(async () => {
+    const template = import.meta.env.VITE_CLERK_TOKEN_TEMPLATE;
+    const requestToken = (options?: Parameters<typeof getToken>[0]) =>
+      getToken(options).catch((error) => {
+        console.error('Clerk token error:', error);
+        throw error;
+      });
+
+    if (!template) {
+      return requestToken();
+    }
+
+    try {
+      return await requestToken({ template });
+    } catch (error) {
+      console.warn(`Falling back to default Clerk session token (template "${template}" was not found).`);
+      return requestToken();
+    }
+  }, [getToken]);
+
+  useEffect(() => {
+    setApiTokenProvider(fetchSessionToken);
+  }, [fetchSessionToken]);
+
   useEffect(() => {
     // Sync Clerk user with your app’s user
     const syncUser = async () => {
       if (clerkUser) {
-        const clerkToken = await getToken();
+        const clerkToken = await fetchSessionToken();
+        if (!clerkToken) {
+          throw new Error('Unable to retrieve Clerk session token.');
+        }
+
         setToken(clerkToken);
+        storage.setToken(clerkToken);
 
         // Fetch or sync user data from your backend
         try {
-          const response = await api.get('/api/auth/me', {
-            headers: { Authorization: `Bearer ${clerkToken}` },
-          });
+          const response = await api.get('/auth/me');
           const backendUser = response.data;
           setAuthUser({
             id: clerkUser.id,
@@ -35,7 +62,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             createdAt: clerkUser.createdAt ? new Date(clerkUser.createdAt).toISOString() : '',
           });
           storage.setUser(backendUser);
-          storage.setToken(clerkToken);
         } catch (error) {
           console.error('Error syncing user:', error);
         }
@@ -48,12 +74,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     };
 
     syncUser();
-  }, [clerkUser, getToken]);
+  }, [clerkUser, fetchSessionToken]);
 
   const login = async () => {
     // Clerk handles login via <SignIn /> component
     // This is for custom logic if needed (e.g., sync with backend)
-    const clerkToken = await getToken();
+    const clerkToken = await fetchSessionToken();
     if (clerkToken) {
       setToken(clerkToken);
       storage.setToken(clerkToken);
@@ -69,14 +95,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }) => {
     // Clerk handles registration via <SignUp />
     // Sync custom fields (e.g., goal) to backend
-    const clerkToken = await getToken();
+    const clerkToken = await fetchSessionToken();
     if (clerkToken && credentials.name) {
       try {
-        await api.post(
-          '/api/auth/register',
-          { name: credentials.name, email: credentials.email, goal: credentials.goal },
-          { headers: { Authorization: `Bearer ${clerkToken}` } }
-        );
+        await api.post('/auth/register', {
+          name: credentials.name,
+          email: credentials.email,
+          goal: credentials.goal,
+        });
         setToken(clerkToken);
         storage.setToken(clerkToken);
       } catch (error) {

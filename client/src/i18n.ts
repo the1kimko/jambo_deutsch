@@ -36,6 +36,13 @@ const resources = {
       errorGeneric: 'Something went wrong',
 
       // Navigation
+      nav: {
+        home: 'Home',
+        lessons: 'Lessons',
+        cards: 'Flashcards',
+        partners: 'Partners',
+        practice: 'Practice',
+      },
       noAccount: "Don't have an account?",
       haveAccount: 'Already have an account?',
       registerHere: 'Register here',
@@ -54,6 +61,8 @@ const resources = {
       practice: 'Practice',
       partners: 'Partners',
       profile: 'Profile',
+      greetings: 'Greetings',
+      directions: 'Directions',
 
       // Progress
       yourProgress: 'Your Progress',
@@ -62,6 +71,10 @@ const resources = {
       completedLessons: 'Completed Lessons',
       continueLesson: 'Continue Lesson',
       startNewLesson: 'Start New Lesson',
+      yourSkills: 'Your Skills',
+      speaking: 'Speaking',
+      reading: 'Reading',
+      writing: 'Writing',
 
       // Greetings
       goodMorning: 'Good Morning',
@@ -75,6 +88,9 @@ const resources = {
       flashcardsDesc: 'Review vocabulary with flashcards',
       practiceDesc: 'Practice pronunciation with AI',
       partnersDesc: 'Connect with learning partners',
+      listening: 'Listening',
+      quickActions: 'Quick Actions',
+      continueLearning: 'Continue Learning',
       start: 'Start',
 
       // Recent Activity
@@ -99,6 +115,15 @@ const resources = {
       save: 'Save',
       cancel: 'Cancel',
       loading: 'Loading...',
+      errorLoadingDashboard: 'Unable to load dashboard data right now.',
+      leaderboard: 'Leaderboard',
+      you: 'You',
+      a1Progress: 'A1 Progress',
+      jambo: 'Jambo!',
+      numbers: 'Numbers',
+      shopping: 'Shopping',
+      restaurant: 'Restaurant',
+      workplace: 'Workplace',
     },
   },
   de: {
@@ -133,6 +158,13 @@ const resources = {
       errorGeneric: 'Etwas ist schiefgelaufen',
 
       // Navigation
+      nav: {
+        home: 'Startseite',
+        lessons: 'Lektionen',
+        cards: 'Karten',
+        partners: 'Partner',
+        practice: 'Üben',
+      },
       noAccount: 'Noch kein Konto?',
       haveAccount: 'Haben Sie bereits ein Konto?',
       registerHere: 'Hier registrieren',
@@ -151,6 +183,8 @@ const resources = {
       practice: 'Üben',
       partners: 'Partner',
       profile: 'Profil',
+      greetings: 'Begrüßungen',
+      directions: 'Wegbeschreibungen',
 
       // Progress
       yourProgress: 'Ihr Fortschritt',
@@ -159,6 +193,10 @@ const resources = {
       completedLessons: 'Abgeschlossene Lektionen',
       continueLesson: 'Lektion fortsetzen',
       startNewLesson: 'Neue Lektion starten',
+      yourSkills: 'Ihre Fähigkeiten',
+      speaking: 'Sprechen',
+      reading: 'Lesen',
+      writing: 'Schreiben',
 
       // Greetings
       goodMorning: 'Guten Morgen',
@@ -172,6 +210,9 @@ const resources = {
       flashcardsDesc: 'Vokabeln mit Lernkarten wiederholen',
       practiceDesc: 'Aussprache mit KI üben',
       partnersDesc: 'Mit Lernpartnern verbinden',
+      listening: 'Hören',
+      quickActions: 'Schnelle Aktionen',
+      continueLearning: 'Weiterlernen',
       start: 'Starten',
 
       // Recent Activity
@@ -196,6 +237,15 @@ const resources = {
       save: 'Speichern',
       cancel: 'Abbrechen',
       loading: 'Laden...',
+      errorLoadingDashboard: 'Das Dashboard konnte gerade nicht geladen werden.',
+      leaderboard: 'Bestenliste',
+      you: 'Du',
+      a1Progress: 'A1-Fortschritt',
+      jambo: 'Jambo!',
+      numbers: 'Zahlen',
+      shopping: 'Einkaufen',
+      restaurant: 'Restaurant',
+      workplace: 'Arbeitsplatz',
     },
   },
 };
