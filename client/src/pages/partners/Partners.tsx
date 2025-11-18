@@ -1,13 +1,14 @@
 // src/pages/partners/Partners.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { MessageCircle, MapPin, Target, Search } from 'lucide-react';
-import BottomNav from '@/components/common/BottomNav';
 import api from '@/utils/api';
+import { usePartnerSocket } from '@/hooks/usePartnerSocket';
+import { buildPartnerChatRoute } from '@/utils/constants';
 
 interface Partner {
   id: string;
@@ -23,16 +24,35 @@ const Partners: React.FC = () => {
   const navigate = useNavigate();
   const [all, setAll] = useState<Partner[]>([]);
   const [query, setQuery] = useState('');
+  const [presenceMap, setPresenceMap] = useState<Record<string, boolean>>({});
+  const { connected, joinPartnerRoom, presenceEvent } = usePartnerSocket();
 
   useEffect(() => {
     api.get('/partners').then((r) => setAll(r.data));
   }, []);
 
-  const filtered = all.filter(
-    (p) =>
-      p.name.toLowerCase().includes(query.toLowerCase()) ||
-      p.location.toLowerCase().includes(query.toLowerCase()) ||
-      p.goal.toLowerCase().includes(query.toLowerCase())
+  useEffect(() => {
+    if (!presenceEvent) return;
+    setPresenceMap((prev) => ({
+      ...prev,
+      [presenceEvent.partnerId]: presenceEvent.online,
+    }));
+  }, [presenceEvent]);
+
+  useEffect(() => {
+    if (!connected || !all.length) return;
+    all.forEach((partner) => joinPartnerRoom(partner.id));
+  }, [connected, all, joinPartnerRoom]);
+
+  const filtered = useMemo(
+    () =>
+      all.filter(
+        (p) =>
+          p.name.toLowerCase().includes(query.toLowerCase()) ||
+          p.location.toLowerCase().includes(query.toLowerCase()) ||
+          p.goal.toLowerCase().includes(query.toLowerCase())
+      ),
+    [all, query]
   );
 
   return (
@@ -67,48 +87,58 @@ const Partners: React.FC = () => {
 
         {/* List */}
         <div className="space-y-4">
-          {filtered.map((p) => (
-            <Card key={p.id} className="p-6 shadow-card hover:shadow-elegant transition-shadow">
-              <div className="flex items-start justify-between gap-4 mb-4">
-                <div className="flex items-start gap-3">
-                  <div className="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground font-bold text-lg">
-                    {p.name.charAt(0)}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2 mb-1">
-                      <h3 className="font-semibold text-foreground">{p.name}</h3>
-                      {p.online && <div className="w-2 h-2 rounded-full bg-success animate-pulse" />}
+          {filtered.map((p) => {
+            const online = presenceMap[p.id] ?? p.online;
+            return (
+              <Card key={p.id} className="p-6 shadow-card hover:shadow-elegant transition-shadow">
+                <div className="flex items-start justify-between gap-4 mb-4">
+                  <div className="flex items-start gap-3">
+                    <div className="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center text-primary-foreground font-bold text-lg">
+                      {p.name.charAt(0)}
                     </div>
-                    <Badge variant="secondary" className="text-xs">{p.level}</Badge>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <h3 className="font-semibold text-foreground">{p.name}</h3>
+                        {online && <div className="w-2 h-2 rounded-full bg-success animate-pulse" />}
+                      </div>
+                      <Badge variant="secondary" className="text-xs">
+                        {p.level}
+                      </Badge>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="space-y-2 mb-4">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <MapPin className="w-4 h-4" />
-                  <span>{p.location}</span>
+                <div className="space-y-2 mb-4">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <MapPin className="w-4 h-4" />
+                    <span>{p.location}</span>
+                  </div>
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Target className="w-4 h-4" />
+                    <span>{p.goal}</span>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Target className="w-4 h-4" />
-                  <span>{p.goal}</span>
+
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {p.interests.map((i) => (
+                    <Badge key={i} variant="outline" className="text-xs">
+                      {i}
+                    </Badge>
+                  ))}
                 </div>
-              </div>
 
-              <div className="flex flex-wrap gap-2 mb-4">
-                {p.interests.map((i) => (
-                  <Badge key={i} variant="outline" className="text-xs">
-                    {i}
-                  </Badge>
-                ))}
-              </div>
-
-              <Button variant="default" size="sm" className="w-full">
-                <MessageCircle className="w-4 h-4 mr-2" />
-                Send Message
-              </Button>
-            </Card>
-          ))}
+                <Button
+                  variant="default"
+                  size="sm"
+                  className="w-full"
+                  onClick={() => navigate(buildPartnerChatRoute(p.id))}
+                >
+                  <MessageCircle className="w-4 h-4 mr-2" />
+                  Chat
+                </Button>
+              </Card>
+            );
+          })}
           {filtered.length === 0 && (
             <Card className="p-12 text-center shadow-card">
               <p className="text-muted-foreground">No partners found.</p>
@@ -116,8 +146,6 @@ const Partners: React.FC = () => {
           )}
         </div>
       </div>
-
-      <BottomNav />
     </div>
   );
 };
