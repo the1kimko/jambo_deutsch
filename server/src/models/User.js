@@ -1,9 +1,45 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs';
 
-// 1. Define the schema
+const partnerPreferencesSchema = new mongoose.Schema(
+  {
+    location: { type: String, trim: true },
+    goal: { type: String, trim: true },
+    level: { type: String, trim: true },
+    interests: [{ type: String }],
+  },
+  { _id: false }
+);
+
+const progressSchema = new mongoose.Schema(
+  {
+    modules: {
+      type: Map,
+      of: Number,
+      default: () => new Map(),
+    },
+    streak: {
+      type: Number,
+      default: 0,
+    },
+    xp: {
+      type: Number,
+      default: 0,
+    },
+    lastUpdated: {
+      type: Date,
+      default: Date.now,
+    },
+  },
+  { _id: false }
+);
+
 const userSchema = new mongoose.Schema(
   {
+    externalId: {
+      type: String,
+      index: true,
+      sparse: true,
+    },
     email: {
       type: String,
       required: [true, 'Email is required'],
@@ -11,83 +47,93 @@ const userSchema = new mongoose.Schema(
       lowercase: true,
       trim: true,
       match: [/^\S+@\S+\.\S+$/, 'Please use a valid email address'],
-      index: true, // Added: improves query performance
-    },
-    password: {
-      type: String,
-      required: [true, 'Password is required'],
-      minlength: [8, 'Password must be at least 8 characters'], // Added error message
-      select: false, // Added: prevents password from being returned in queries by default
+      index: true,
     },
     name: {
       type: String,
-      required: [true, 'Name is required'],
       trim: true,
-      minlength: [2, 'Name must be at least 2 characters'], // Added
-      validate: {
-        validator: function (v) {
-          return /^\s*\S+\s+\S+/.test(v); // at least two words
-        },
-        message: 'Please enter both first and last name',
-      },
+      default: '',
+    },
+    firstName: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    lastName: {
+      type: String,
+      trim: true,
+      default: '',
+    },
+    avatarUrl: {
+      type: String,
+      trim: true,
+    },
+    goal: {
+      type: String,
+      enum: ['General', 'Visa Prep', 'Exam Prep', 'Other'],
+      default: 'General',
     },
     role: {
       type: String,
       enum: ['user', 'admin'],
       default: 'user',
-    }, // Added: for future role-based access
+    },
+    partnerPreferences: {
+      type: partnerPreferencesSchema,
+      default: () => ({}),
+    },
+    progress: {
+      type: progressSchema,
+      default: () => ({}),
+    },
   },
   {
     timestamps: true,
-    toJSON: {virtuals: true},
-    toObject: {virtuals: true},
+    toJSON: { virtuals: true },
+    toObject: { virtuals: true },
   }
 );
 
-// // 2. Add indexes for performance
-// userSchema.index({email: 1}); // Ensures fast email lookups
-
-// 3. Add virtuals (computed fields)
-userSchema.virtual('firstName').get(function () {
-  return this.name.split(' ')[0];
+userSchema.virtual('fullName').get(function () {
+  if (this.name) return this.name;
+  return [this.firstName, this.lastName].filter(Boolean).join(' ').trim();
 });
 
-userSchema.virtual('lastName').get(function () {
-  const parts = this.name.split(' ');
-  return parts.slice(1).join(' ') || ''; // Added: handles single-word names gracefully
-});
-
-// 4. Add middleware (hooks)
-userSchema.pre('save', async function (next) {
-  // Only hash if the password is modified
-  if (!this.isModified('password')) return next();
-
-  try {
-    this.password = await bcrypt.hash(this.password, 12);
-    next();
-  } catch (error) {
-    next(error); // Added: proper error handling
-  }
-});
-
-// 5. Add instance methods
-userSchema.methods.comparePassword = async function (candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
-};
-
-// Optional: Add the method to get public user data (without sensitive info)
 userSchema.methods.toPublicJSON = function () {
+  const moduleProgress = {};
+  const modulesData = this.progress?.modules;
+  if (modulesData instanceof Map) {
+    for (const [key, value] of modulesData.entries()) {
+      moduleProgress[key] = value;
+    }
+  } else if (modulesData && typeof modulesData === 'object') {
+    Object.entries(modulesData).forEach(([key, value]) => {
+      moduleProgress[key] = value;
+    });
+  }
+
   return {
     id: this._id,
-    name: this.name,
+    externalId: this.externalId,
+    name: this.fullName,
+    firstName: this.firstName || this.fullName?.split(' ')[0] || '',
+    lastName: this.lastName || this.fullName?.split(' ').slice(1).join(' ') || '',
     email: this.email,
-    firstName: this.firstName,
-    lastName: this.lastName,
+    goal: this.goal,
+    role: this.role,
+    avatarUrl: this.avatarUrl,
+    progress: {
+      modules: moduleProgress,
+      streak: this.progress?.streak || 0,
+      xp: this.progress?.xp || 0,
+      lastUpdated: this.progress?.lastUpdated,
+    },
+    partnerPreferences: this.partnerPreferences,
     createdAt: this.createdAt,
+    updatedAt: this.updatedAt,
   };
 };
 
-// 6. Compile and export the model
 const User = mongoose.model('User', userSchema);
 
 export default User;
