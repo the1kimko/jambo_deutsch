@@ -83,25 +83,35 @@ export const registerUser = asyncHandler(async (req, res) => {
     goal = 'General',
     partnerPreferences,
     role,
+    location,
   } = req.validatedData || {};
 
   const identifier = email ? { email } : { externalId };
   const displayName =
     name || `${firstName || ''} ${lastName || ''}`.trim() || email?.split('@')[0] || 'Learner';
 
+  const profileUpdate = {
+    name: displayName,
+    firstName: firstName || '',
+    lastName: lastName || '',
+    goal,
+    partnerPreferences,
+    role: role || 'user',
+    email,
+    externalId: externalId || req.auth?.userId,
+    location,
+  };
+
+  Object.keys(profileUpdate).forEach((key) => {
+    if (profileUpdate[key] === undefined) {
+      delete profileUpdate[key];
+    }
+  });
+
   const user = await User.findOneAndUpdate(
     identifier,
     {
-      $set: {
-        name: displayName,
-        firstName: firstName || '',
-        lastName: lastName || '',
-        goal,
-        partnerPreferences,
-        role: role || 'user',
-        email,
-        externalId: externalId || req.auth?.userId,
-      },
+      $set: profileUpdate,
       $setOnInsert: {
         progress: {
           modules: defaultModuleProgress(),

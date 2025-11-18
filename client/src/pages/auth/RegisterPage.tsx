@@ -1,10 +1,20 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { SignUp } from '@clerk/clerk-react';
 import { useTranslation } from 'react-i18next';
-import { ROUTES } from '@/utils/constants';
+import { ROUTES, GOALS } from '@/utils/constants';
+import { storage } from '@/utils/storage';
 
 const RegisterPage: React.FC = () => {
   const { t } = useTranslation();
+  const [goal, setGoal] = useState<typeof GOALS[number]>('General');
+  const [location, setLocation] = useState('');
+  const [saved, setSaved] = useState(false);
+
+  const handlePreferencesSave = (event: React.FormEvent) => {
+    event.preventDefault();
+    storage.setProfileSetup({ goal, location: location.trim() || undefined });
+    setSaved(true);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-500 to-blue-600 flex items-center justify-center p-4">
@@ -15,6 +25,51 @@ const RegisterPage: React.FC = () => {
           </h1>
           <p className="text-gray-600">{t('startLearning')}</p>
         </div>
+        <form onSubmit={handlePreferencesSave} className="space-y-4 mb-6">
+          <div className="text-left">
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Preferred learning goal
+            </label>
+            <select
+              value={goal}
+              onChange={(e) => {
+                setSaved(false);
+                setGoal(e.target.value as typeof GOALS[number]);
+              }}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40"
+            >
+              {GOALS.map((option) => (
+                <option key={option} value={option}>
+                  {t(option.toLowerCase().replace(' ', '')) ?? option}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="text-left">
+            <label className="block text-sm font-semibold text-gray-700 mb-1">
+              Where are you learning from?
+            </label>
+            <input
+              type="text"
+              placeholder="City, Country"
+              value={location}
+              onChange={(e) => {
+                setSaved(false);
+                setLocation(e.target.value);
+              }}
+              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40"
+            />
+            <p className="mt-1 text-xs text-muted-foreground">
+              We use this to match you with nearby study partners.
+            </p>
+          </div>
+          <button
+            type="submit"
+            className="w-full rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 py-2 text-sm font-semibold text-white shadow hover:shadow-md transition"
+          >
+            {saved ? 'Preferences saved!' : 'Save preferences before signing up'}
+          </button>
+        </form>
         <SignUp
           afterSignUpUrl={ROUTES.DASHBOARD}
           signInUrl={ROUTES.LOGIN}

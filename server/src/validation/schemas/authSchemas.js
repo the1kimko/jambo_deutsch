@@ -8,6 +8,7 @@ export const clientRegisterSchema = z
     email: z.string().email('Invalid email address'),
     password: passwordValidator,
     confirmPassword: z.string(),
+    location: z.string().min(2).max(120),
     role: z.enum(['user', 'admin']).optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -21,6 +22,7 @@ export const registerSchema = z.object({
   firstName: z.string().min(1).max(50).optional(),
   lastName: z.string().min(1).max(50).optional(),
   email: z.string().email('Invalid email address').optional(),
+  location: z.string().min(2).max(120).optional(),
   goal: z.enum(['General', 'Visa Prep', 'Exam Prep', 'Other']).optional(),
   partnerPreferences: z
     .object({

@@ -73,6 +73,11 @@ const userSchema = new mongoose.Schema(
       enum: ['General', 'Visa Prep', 'Exam Prep', 'Other'],
       default: 'General',
     },
+    location: {
+      type: String,
+      trim: true,
+      default: '',
+    },
     role: {
       type: String,
       enum: ['user', 'admin'],

@@ -42,11 +42,23 @@ export const storage = {
     localStorage.setItem(STORAGE_KEYS.STREAK, streak.toString());
   },
 
+  getProfileSetup: (): { goal?: string; location?: string } | null => {
+    const data = localStorage.getItem(STORAGE_KEYS.PROFILE_SETUP);
+    return data ? JSON.parse(data) : null;
+  },
+  setProfileSetup: (payload: { goal?: string; location?: string }): void => {
+    localStorage.setItem(STORAGE_KEYS.PROFILE_SETUP, JSON.stringify(payload));
+  },
+  clearProfileSetup: (): void => {
+    localStorage.removeItem(STORAGE_KEYS.PROFILE_SETUP);
+  },
+
   // Clear all
   clearAll: (): void => {
     localStorage.removeItem(STORAGE_KEYS.TOKEN);
     localStorage.removeItem(STORAGE_KEYS.USER);
     localStorage.removeItem(STORAGE_KEYS.PROGRESS);
     localStorage.removeItem(STORAGE_KEYS.STREAK);
+    localStorage.removeItem(STORAGE_KEYS.PROFILE_SETUP);
   },
 };

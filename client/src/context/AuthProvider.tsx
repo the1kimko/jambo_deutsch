@@ -49,19 +49,35 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setToken(clerkToken);
         storage.setToken(clerkToken);
 
+        const pendingProfile = storage.getProfileSetup();
+
         // Fetch or sync user data from your backend
         try {
           const response = await api.get('/auth/me');
           const backendUser = response.data;
-          setAuthUser({
+          const normalizedUser: AuthUser = {
             id: clerkUser.id,
             name: clerkUser.fullName || '',
             email: clerkUser.primaryEmailAddress?.emailAddress || '',
             firstName: clerkUser.firstName || '',
             lastName: clerkUser.lastName || '',
             createdAt: clerkUser.createdAt ? new Date(clerkUser.createdAt).toISOString() : '',
-          });
+          };
+          setAuthUser(normalizedUser);
           storage.setUser(backendUser);
+
+          if (pendingProfile && (pendingProfile.goal || pendingProfile.location)) {
+            try {
+              await api.post('/auth/register', {
+                name: normalizedUser.name,
+                goal: pendingProfile.goal,
+                location: pendingProfile.location,
+              });
+              storage.clearProfileSetup();
+            } catch (syncError) {
+              console.error('Profile preference sync error:', syncError);
+            }
+          }
         } catch (error) {
           console.error('Error syncing user:', error);
         }
@@ -92,6 +108,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     email: string;
     password: string;
     goal?: string;
+    location?: string;
   }) => {
     // Clerk handles registration via <SignUp />
     // Sync custom fields (e.g., goal) to backend
@@ -102,6 +119,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           name: credentials.name,
           email: credentials.email,
           goal: credentials.goal,
+          location: credentials.location,
         });
         setToken(clerkToken);
         storage.setToken(clerkToken);

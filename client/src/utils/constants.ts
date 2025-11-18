@@ -13,6 +13,7 @@ export const ROUTES = {
     FLASHCARDS: '/flashcards',
     PRACTICE: '/practice',
     PARTNERS: '/partners',
+    PARTNER_CHAT: '/partners/:partnerId/chat',
     PRONUNCIATION: '/pronunciation',
     PROFILE: '/profile',
     SETTINGS: '/settings'
@@ -37,7 +38,8 @@ export const STORAGE_KEYS = {
     TOKEN: 'token',
     USER: 'user',
     PROGRESS: 'progress',
-    STREAK: 'streak'
+    STREAK: 'streak',
+    PROFILE_SETUP: 'profile_setup',
 } as const;
 
 export const MODULES = [
@@ -48,3 +50,5 @@ export const MODULES = [
     'restaurant',
     'workplace',
 ] as const;
+
+export const buildPartnerChatRoute = (partnerId: string) => `/partners/${partnerId}/chat`;
