@@ -10,6 +10,7 @@ import Lessons from '@/pages/lessons/Lessons';
 import LessonDetail from '@/pages/lessons/LessonDetails';
 import Flashcards from '@/pages/flashcards/Flashcards';
 import Partners from '@/pages/partners/Partners';
+import PartnerChat from '@/pages/partners/PartnerChat';
 import Pronunciation from '@/pages/pronunciation/Pronunciation';
 import { ROUTES } from '@/utils/constants';
 
@@ -70,6 +71,14 @@ const App: React.FC = () => {
             element={
               <ProtectedRoute>
                 <Partners />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path={ROUTES.PARTNER_CHAT}
+            element={
+              <ProtectedRoute>
+                <PartnerChat />
               </ProtectedRoute>
             }
           />
