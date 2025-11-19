@@ -1,11 +1,15 @@
 // src/pages/pronunciation/Pronunciation.tsx
-import React, { useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Mic, Volume2, CheckCircle, XCircle, RotateCcw } from 'lucide-react';
+import { Mic, Volume2, CheckCircle, XCircle, RotateCcw, UploadCloud, Pause, Play } from 'lucide-react';
+import { Progress } from '@/components/ui/progress';
+import { Textarea } from '@/components/ui/textarea';
 import BottomNav from '@/components/common/BottomNav';
+import api from '@/utils/api';
+import { useToast } from '@/hooks/use-toast';
 
 interface Word {
   german: string;
@@ -22,10 +26,17 @@ const WORDS: Word[] = [
 
 const Pronunciation: React.FC = () => {
   const navigate = useNavigate();
+  const { toast } = useToast();
   const [wordIdx, setWordIdx] = useState(0);
+  const [recorder, setRecorder] = useState<MediaRecorder | null>(null);
   const [isRecording, setIsRecording] = useState(false);
-  const [hasRecorded, setHasRecorded] = useState(false);
-  const [feedback, setFeedback] = useState<'good' | 'tryagain' | null>(null);
+  const [chunks, setChunks] = useState<Blob[]>([]);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [duration, setDuration] = useState(0);
+  const [note, setNote] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const chunksRef = useRef<Blob[]>([]);
 
   const word = WORDS[wordIdx];
 
@@ -35,31 +46,100 @@ const Pronunciation: React.FC = () => {
     window.speechSynthesis.speak(utter);
   };
 
-  const toggleRecording = () => {
-    if (isRecording) {
-      setIsRecording(false);
-      setHasRecorded(true);
-      // fake analysis
-      setTimeout(() => setFeedback(Math.random() > 0.3 ? 'good' : 'tryagain'), 800);
-    } else {
-      setIsRecording(true);
-      setHasRecorded(false);
-      setFeedback(null);
+  const startTimer = () => {
+    timerRef.current = setInterval(() => {
+      setDuration((prev) => prev + 1);
+    }, 1000);
+  };
+
+  const stopTimer = () => {
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
     }
   };
 
-  const nextWord = () => {
-    setWordIdx((i) => (i + 1) % WORDS.length);
-    setIsRecording(false);
-    setHasRecorded(false);
-    setFeedback(null);
+  const beginRecording = async () => {
+    if (recorder) {
+      recorder.start();
+      setIsRecording(true);
+      startTimer();
+      chunksRef.current = [];
+      setPreviewUrl(null);
+      return;
+    }
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          chunksRef.current.push(event.data);
+          setChunks((prev) => [...prev, event.data]);
+        }
+      };
+      mediaRecorder.onstop = () => {
+        stopTimer();
+        const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
+        setPreviewUrl(URL.createObjectURL(blob));
+      };
+      mediaRecorder.start();
+      setRecorder(mediaRecorder);
+      setIsRecording(true);
+      startTimer();
+      chunksRef.current = [];
+      setPreviewUrl(null);
+    } catch (error) {
+      console.error(error);
+      toast({ title: 'Microphone blocked', description: 'Please allow microphone access.' });
+    }
   };
 
-  const retry = () => {
+  const stopRecording = () => {
+    if (!recorder) return;
+    recorder.stop();
     setIsRecording(false);
-    setHasRecorded(false);
-    setFeedback(null);
   };
+
+  const discardRecording = () => {
+    chunksRef.current = [];
+    setChunks([]);
+    setPreviewUrl(null);
+    setDuration(0);
+    setNote('');
+  };
+
+  const uploadRecording = async () => {
+    if (!previewUrl || !chunksRef.current.length) return;
+    const blob = new Blob(chunksRef.current, { type: 'audio/webm' });
+    const formData = new FormData();
+    formData.append('audio', blob, 'sprachprobe.webm');
+    formData.append('phrase', word.german);
+    formData.append('location', note);
+    formData.append('duration', duration.toString());
+    setUploading(true);
+    try {
+      await api.post('/practice/recordings', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      await Promise.allSettled([
+        api.post('/progress/xp', { moduleId: 'pronunciation', xp: 15 }),
+        api.post('/progress/streak', {}),
+      ]);
+      toast({ title: 'Recording saved!', description: 'We will analyze and share feedback soon.' });
+      discardRecording();
+    } catch (error) {
+      console.error(error);
+      toast({ title: 'Upload failed', description: 'Please try again.' });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const statusMessage = useMemo(() => {
+    if (isRecording) return 'Recording… tap to stop';
+    if (previewUrl) return 'Preview your recording or upload it for review.';
+    return 'Tap to record';
+  }, [isRecording, previewUrl]);
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -93,59 +173,58 @@ const Pronunciation: React.FC = () => {
             <p className="text-muted-foreground">{word.english}</p>
           </div>
 
-          <div className="py-8">
+          <div className="py-6 flex flex-col items-center gap-4">
             <button
-              onClick={toggleRecording}
+              onClick={isRecording ? stopRecording : beginRecording}
               className={`w-24 h-24 rounded-full flex items-center justify-center transition-all ${
                 isRecording
                   ? 'bg-destructive animate-pulse-glow'
                   : 'bg-gradient-primary hover:scale-110 shadow-elegant'
               }`}
             >
-              <Mic className="w-12 h-12 text-primary-foreground" />
+              {isRecording ? (
+                <Pause className="w-10 h-10 text-white" />
+              ) : (
+                <Mic className="w-10 h-10 text-primary-foreground" />
+              )}
             </button>
-          </div>
 
-          <p className="text-sm text-muted-foreground">
-            {isRecording
-              ? 'Recording… tap to stop'
-              : hasRecorded
-              ? 'Analyzing…'
-              : 'Tap to record'}
-          </p>
+            <div className="w-full">
+              <Progress value={Math.min((duration / 30) * 100, 100)} />
+              <p className="mt-2 text-xs text-muted-foreground text-center">
+                {statusMessage} {duration > 0 && !isRecording ? `(${duration}s)` : ''}
+              </p>
+            </div>
+          </div>
         </Card>
 
-        {/* Feedback */}
-        {feedback && (
-          <Card className={`p-6 ${feedback === 'good' ? 'bg-success/10' : 'bg-accent/10'}`}>
-            <div className="flex items-start gap-3">
-              {feedback === 'good' ? (
-                <CheckCircle className="w-6 h-6 text-success flex-shrink-0" />
-              ) : (
-                <XCircle className="w-6 h-6 text-accent flex-shrink-0" />
-              )}
-              <div className="flex-1">
-                <h3 className="font-semibold mb-2 text-foreground">
-                  {feedback === 'good' ? 'Excellent pronunciation!' : 'Good try!'}
-                </h3>
-                <p className="text-sm text-muted-foreground mb-4">
-                  {feedback === 'good'
-                    ? 'Your pronunciation is clear and accurate.'
-                    : 'Focus on the vowel sounds. Listen again and try once more.'}
-                </p>
-                <div className="flex gap-2">
-                  {feedback === 'tryagain' && (
-                    <Button variant="outline" size="sm" onClick={retry}>
-                      <RotateCcw className="w-4 h-4 mr-2" />
-                      Try Again
-                    </Button>
-                  )}
-                  <Button variant="default" size="sm" onClick={nextWord}>
-                    {wordIdx < WORDS.length - 1 ? 'Next Word' : 'Start Over'}
-                  </Button>
-                </div>
+        {previewUrl && (
+          <Card className="p-6 space-y-4">
+            <div className="flex items-center justify-between">
+              <p className="font-semibold text-foreground">Your recording</p>
+              <div className="flex gap-2">
+                <Button variant="outline" size="sm" onClick={discardRecording}>
+                  <RotateCcw className="w-4 h-4 mr-1" />
+                  Discard
+                </Button>
+                <Button
+                  variant="default"
+                  size="sm"
+                  onClick={uploadRecording}
+                  disabled={uploading}
+                >
+                  <UploadCloud className="w-4 h-4 mr-1" />
+                  {uploading ? 'Uploading…' : 'Save'}
+                </Button>
               </div>
             </div>
+            <audio controls src={previewUrl} className="w-full" />
+            <Textarea
+              placeholder="Notes or location (optional)"
+              value={note}
+              onChange={(e) => setNote(e.target.value)}
+              className="rounded-2xl"
+            />
           </Card>
         )}
 
