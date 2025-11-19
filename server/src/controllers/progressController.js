@@ -72,3 +72,19 @@ export const updateStreak = asyncHandler(async (req, res) => {
 
   res.json({ progress: user.toPublicJSON().progress });
 });
+
+export const awardXp = asyncHandler(async (req, res) => {
+  const user = await getUserOrThrow(req, res);
+  if (!user) return;
+
+  if (!user.progress) {
+    user.progress = { modules: new Map(), streak: 0, xp: 0 };
+  }
+
+  const xp = req.validatedData?.xp || 0;
+  user.progress.xp = (user.progress.xp || 0) + xp;
+  user.progress.lastUpdated = new Date();
+  await user.save();
+
+  res.json({ progress: user.toPublicJSON().progress });
+});

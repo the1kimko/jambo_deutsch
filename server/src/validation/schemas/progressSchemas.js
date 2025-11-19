@@ -12,3 +12,11 @@ export const progressUpdateSchema = z.object({
 export const progressStreakSchema = z.object({
   streak: z.number().int().min(0).optional(),
 });
+
+export const progressXpSchema = z.object({
+  moduleId: z
+    .string()
+    .min(1, 'Module ID is required')
+    .refine((value) => MODULES.includes(value), 'Unknown module ID'),
+  xp: z.number().min(1).max(200),
+});
