@@ -14,4 +14,24 @@ export const activitySeed = [
     module: 'directions',
     xp: 40,
   },
+  {
+    type: 'lesson',
+    module: 'family',
+    xp: 45,
+  },
+  {
+    type: 'flashcard',
+    module: 'food',
+    xp: 30,
+  },
+  {
+    type: 'practice',
+    module: 'pronunciation',
+    xp: 35,
+  },
+  {
+    type: 'quiz',
+    module: 'time',
+    xp: 40,
+  },
 ];
