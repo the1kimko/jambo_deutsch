@@ -47,8 +47,10 @@ export const MODULES = [
     'numbers',
     'directions',
     'shopping',
-    'restaurant',
-    'workplace',
+    'family',
+    'food',
+    'time',
+    'pronunciation',
 ] as const;
 
 export const buildPartnerChatRoute = (partnerId: string) => `/partners/${partnerId}/chat`;
