@@ -3,8 +3,10 @@ export const MODULES = [
   'numbers',
   'directions',
   'shopping',
-  'restaurant',
-  'workplace',
+  'family',
+  'food',
+  'time',
+  'pronunciation',
 ];
 
 export const XP_PER_PERCENT = 10;

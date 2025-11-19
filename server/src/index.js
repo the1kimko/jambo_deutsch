@@ -11,6 +11,7 @@ import partnerRoutes from './routes/partners.js';
 import progressRoutes from './routes/progress.js';
 import activitiesRoutes from './routes/activities.js';
 import leaderboardRoutes from './routes/leaderboard.js';
+import practiceRoutes from './routes/practice.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { notFound } from './middleware/notFound.js';
 import { seedDatabase } from './utils/seedData.js';
@@ -46,6 +47,7 @@ app.use('/api/partners', partnerRoutes);
 app.use('/api/progress', progressRoutes);
 app.use('/api/activities', activitiesRoutes);
 app.use('/api/leaderboard', leaderboardRoutes);
+app.use('/api/practice', practiceRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
