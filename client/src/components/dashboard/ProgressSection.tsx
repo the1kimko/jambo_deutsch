@@ -12,8 +12,10 @@ const moduleIcons: Record<string, string> = {
   numbers: '🔢',
   directions: '🗺️',
   shopping: '🛒',
-  restaurant: '🍽️',
-  workplace: '💼',
+  family: '👪',
+  food: '🍽️',
+  time: '⏰',
+  pronunciation: '🎙️',
 };
 
 const ProgressSection: React.FC<ProgressSectionProps> = ({ progress }) => {
