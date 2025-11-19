@@ -1,6 +1,6 @@
 import React from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
-import { SignedIn, SignedOut, RedirectToSignIn } from '@clerk/clerk-react';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
+import { SignedIn, SignedOut } from '@clerk/clerk-react';
 import { ProgressProvider } from '@/context/ProgressProvider';
 import AppLayout from '@/components/layout/AppLayout';
 import LoginPage from '@/pages/auth/LoginPage';
@@ -15,14 +15,17 @@ import Pronunciation from '@/pages/pronunciation/Pronunciation';
 import { ROUTES } from '@/utils/constants';
 
 // Helper: protected route component
-const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => (
-  <>
-    <SignedIn>{children}</SignedIn>
-    <SignedOut>
-      <RedirectToSignIn />
-    </SignedOut>
-  </>
-);
+const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const location = useLocation();
+  return (
+    <>
+      <SignedIn>{children}</SignedIn>
+      <SignedOut>
+        <Navigate to={ROUTES.LOGIN} state={{ from: location }} replace />
+      </SignedOut>
+    </>
+  );
+};
 
 const App: React.FC = () => {
   return (

@@ -63,6 +63,11 @@ const resources = {
       profile: 'Profile',
       greetings: 'Greetings',
       directions: 'Directions',
+      shopping: 'Shopping',
+      family: 'Family & Friends',
+      food: 'Food & Drink',
+      time: 'Days & Weather',
+      pronunciation: 'Pronunciation',
 
       // Progress
       yourProgress: 'Your Progress',
@@ -185,6 +190,11 @@ const resources = {
       profile: 'Profil',
       greetings: 'Begrüßungen',
       directions: 'Wegbeschreibungen',
+      shopping: 'Einkaufen',
+      family: 'Familie & Freunde',
+      food: 'Essen & Trinken',
+      time: 'Tage & Wetter',
+      pronunciation: 'Aussprache',
 
       // Progress
       yourProgress: 'Ihr Fortschritt',

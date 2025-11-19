@@ -10,8 +10,8 @@
 /* ========================================================================== */
 @theme {
   /* Neumorphic Ivory Base */
-  --color-background: 45 40% 94%;
-  --color-foreground: 24 24% 16%;
+    --color-background: 45 40% 94%;
+    --color-foreground: 24 24% 16%;
   --color-muted: 45 25% 90%;
   --color-muted-foreground: 24 10% 40%;
   --color-border: 42 24% 82%;
