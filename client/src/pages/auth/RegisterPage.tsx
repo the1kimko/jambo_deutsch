@@ -3,6 +3,7 @@ import { SignUp } from '@clerk/clerk-react';
 import { useTranslation } from 'react-i18next';
 import { ROUTES, GOALS } from '@/utils/constants';
 import { storage } from '@/utils/storage';
+import ThemeToggle from '@/components/common/ThemeToggle';
 
 const RegisterPage: React.FC = () => {
   const { t } = useTranslation();
@@ -17,75 +18,118 @@ const RegisterPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-500 to-blue-600 flex items-center justify-center p-4">
-      <div className="bg-white p-8 rounded-lg shadow-2xl w-full max-w-md">
-        <div className="text-center mb-6">
-          <h1 className="text-3xl font-bold text-gray-800 mb-2">
-            {t('joinUs')} 🚀
-          </h1>
-          <p className="text-gray-600">{t('startLearning')}</p>
-        </div>
-        <form onSubmit={handlePreferencesSave} className="space-y-4 mb-6">
-          <div className="text-left">
-            <label className="block text-sm font-semibold text-gray-700 mb-1">
-              Preferred learning goal
-            </label>
-            <select
-              value={goal}
-              onChange={(e) => {
-                setSaved(false);
-                setGoal(e.target.value as typeof GOALS[number]);
-              }}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40"
-            >
-              {GOALS.map((option) => (
-                <option key={option} value={option}>
-                  {t(option.toLowerCase().replace(' ', '')) ?? option}
-                </option>
-              ))}
-            </select>
+    <div className="min-h-screen bg-background">
+      <div className="fixed top-4 right-4 z-50">
+        <ThemeToggle />
+      </div>
+      <div className="grid min-h-screen lg:grid-cols-2">
+        <section className="flex flex-col justify-between bg-gradient-to-br from-teal-500 via-emerald-500 to-lime-400 px-10 py-14 text-white">
+          <div>
+            <p className="text-sm uppercase tracking-[0.3em] text-white/80">Plan your journey</p>
+            <h1 className="mt-6 text-4xl font-semibold leading-tight">
+              Craft a learning goal and we’ll guide you every step.
+            </h1>
+            <p className="mt-4 max-w-md text-white/90">{t('startLearning')}</p>
           </div>
-          <div className="text-left">
-            <label className="block text-sm font-semibold text-gray-700 mb-1">
-              Where are you learning from?
-            </label>
-            <input
-              type="text"
-              placeholder="City, Country"
-              value={location}
-              onChange={(e) => {
-                setSaved(false);
-                setLocation(e.target.value);
+          <div className="mt-10 rounded-3xl bg-white/15 p-6 backdrop-blur">
+            <p className="text-xs uppercase tracking-wide text-white/70">Why share preferences?</p>
+            <ul className="mt-3 space-y-2 text-sm">
+              <li>• Match with partners in similar timezones.</li>
+              <li>• Receive lesson suggestions that fit your goals.</li>
+              <li>• Unlock local pronunciation and culture tips.</li>
+            </ul>
+          </div>
+        </section>
+
+        <section className="flex items-center justify-center px-6 py-12">
+          <div className="w-full max-w-md space-y-6">
+            <div className="space-y-2 text-center">
+              <p className="text-sm font-semibold text-primary">{t('joinUs')} 🚀</p>
+              <h2 className="text-3xl font-bold text-foreground">Create your account</h2>
+              <p className="text-muted-foreground">Save preferences then finish signup with Clerk.</p>
+            </div>
+
+            <form onSubmit={handlePreferencesSave} className="space-y-4 rounded-3xl border border-border bg-card p-6 shadow-card">
+              <div>
+                <label className="block text-sm font-semibold text-foreground">
+                  Preferred learning goal
+                </label>
+                <div className="mt-2 grid grid-cols-2 gap-2">
+                  {GOALS.map((option) => (
+                    <button
+                      key={option}
+                      type="button"
+                      aria-pressed={goal === option}
+                      onClick={() => {
+                        setGoal(option);
+                        setSaved(false);
+                      }}
+                      className={`cursor-pointer rounded-2xl border px-3 py-2 text-sm font-medium transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary ${
+                        goal === option ? 'border-primary bg-primary/10 text-primary shadow-glow' : 'border-border text-muted-foreground hover:border-primary/60'
+                      }`}
+                    >
+                      {t(option.toLowerCase().replace(' ', '')) ?? option}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-foreground">
+                  Where are you learning from?
+                </label>
+                <input
+                  type="text"
+                  placeholder="City, Country"
+                  value={location}
+                  onChange={(e) => {
+                    setSaved(false);
+                    setLocation(e.target.value);
+                  }}
+                  className="mt-2 w-full rounded-2xl border border-border px-3 py-3 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30"
+                />
+                <p className="mt-1 text-xs text-muted-foreground">
+                  We use this to match you with nearby partners.
+                </p>
+              </div>
+
+              <button
+                type="submit"
+                className="w-full rounded-2xl bg-gradient-primary py-3 text-sm font-semibold text-white shadow-glow transition hover:translate-y-0.5"
+              >
+                {saved ? 'Preferences saved!' : 'Save preferences'}
+              </button>
+            </form>
+
+            <SignUp
+              afterSignUpUrl={ROUTES.DASHBOARD}
+              signInUrl={ROUTES.LOGIN}
+              appearance={{
+                variables: {
+                  colorPrimary: '#22c55e',
+                  colorBackground: 'transparent',
+                  borderRadius: '18px',
+                  fontFamily: 'Inter, sans-serif',
+                },
+                elements: {
+                  rootBox: 'rounded-3xl border border-border bg-card px-6 py-4 shadow-card',
+                  card: 'bg-transparent',
+                  headerTitle: 'text-2xl font-semibold text-foreground',
+                  headerSubtitle: 'text-sm text-muted-foreground',
+                  socialButtonsBlockButton:
+                    'border border-border bg-background text-foreground rounded-2xl h-12',
+                  formFieldInput:
+                    'rounded-2xl border-border h-12 bg-background text-base focus:ring-2 focus:ring-primary',
+                  formButtonPrimary:
+                    'bg-gradient-to-r from-emerald-500 to-lime-400 text-white rounded-2xl h-12 font-semibold shadow-elegant',
+                  footer: 'hidden',
+                  dividerLine: 'bg-border',
+                  dividerText: 'text-muted-foreground text-xs uppercase tracking-wide',
+                },
               }}
-              className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/40"
             />
-            <p className="mt-1 text-xs text-muted-foreground">
-              We use this to match you with nearby study partners.
-            </p>
           </div>
-          <button
-            type="submit"
-            className="w-full rounded-lg bg-gradient-to-r from-amber-500 to-orange-500 py-2 text-sm font-semibold text-white shadow hover:shadow-md transition"
-          >
-            {saved ? 'Preferences saved!' : 'Save preferences before signing up'}
-          </button>
-        </form>
-        <SignUp
-          afterSignUpUrl={ROUTES.DASHBOARD}
-          signInUrl={ROUTES.LOGIN}
-          appearance={{
-            elements: {
-              card: 'bg-white rounded-lg shadow-2xl p-6',
-              headerTitle: 'text-3xl font-bold text-gray-800',
-              headerSubtitle: 'text-gray-600',
-              formFieldInput: 'border-gray-300 rounded-lg p-2 w-full',
-              formButtonPrimary: 'bg-green-600 hover:bg-green-700 text-white w-full mt-4',
-              socialButtonsBlockButton: 'bg-blue-600 hover:bg-blue-700 text-white w-full mb-4',
-              dividerLine: 'border-t border-gray-300 my-4',
-              dividerText: 'text-gray-500',
-            },
-          }}
-        />
+        </section>
       </div>
     </div>
   );
