@@ -24,19 +24,19 @@ const StatsGrid: React.FC<StatsGridProps> = ({
         icon="🔥"
         label={t('currentStreak')}
         value={formatStreak(streak)}
-        color="orange"
+        accent="primary"
       />
       <StatsCard
         icon="⭐"
         label={t('totalXP')}
         value={formatXP(totalXP)}
-        color="blue"
+        accent="secondary"
       />
       <StatsCard
         icon="📚"
         label={t('completedLessons')}
         value={`${completedLessons}/${totalLessons}`}
-        color="green"
+        accent="success"
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { type AxiosRequestHeaders } from 'axios';
 import { storage } from '@/utils/storage';
 
 type TokenProvider = () => Promise<string | null> | string | null;
@@ -19,7 +19,7 @@ const api = axios.create({
 
 api.interceptors.request.use(
   async (config) => {
-    config.headers = config.headers ?? {};
+    const headers: AxiosRequestHeaders = (config.headers ?? {}) as AxiosRequestHeaders;
     let token = storage.getToken();
 
     if (tokenProvider) {
@@ -35,10 +35,10 @@ api.interceptors.request.use(
     }
 
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      headers.Authorization = `Bearer ${token}`;
     }
 
-    return config;
+    return { ...config, headers };
   },
   (error) => Promise.reject(error)
 );

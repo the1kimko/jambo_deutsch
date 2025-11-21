@@ -40,7 +40,7 @@ const PartnerChat: React.FC = () => {
   const [isSending, setIsSending] = useState(false);
   const [typingIndicator, setTypingIndicator] = useState(false);
   const listRef = useRef<HTMLDivElement | null>(null);
-  const currentUserId = storage.getUser()?.id;
+  const currentUserId = storage.getUser<{ id?: string }>()?.id;
 
   const {
     connected,
@@ -138,7 +138,7 @@ const PartnerChat: React.FC = () => {
     }
   };
 
-  const typingTimeout = useRef<ReturnType<typeof setTimeout>>();
+  const typingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setInput(value);
