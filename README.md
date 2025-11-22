@@ -2,6 +2,16 @@
 
 Modern MERN stack learning platform for German learners. The project pairs a Clerk-secured Vite/React client with an Express + MongoDB API, complete with lesson content, flashcards, partner discovery, and a real-time messaging experience powered by Socket.IO.
 
+## Live Demo
+
+- Client (production): https://jambo-deutsch-client-production.up.railway.app/
+- API (production): https://jambo-deutsch-server-production.up.railway.app/
+
+## Screenshot
+
+![Jambo Deutsch dashboard](./client/public/jambo-deutsch-client-app-dashboard-2025.png)
+
+
 ## Features
 
 - **Clerk Authentication** with JWT-protected REST and WebSocket endpoints.
